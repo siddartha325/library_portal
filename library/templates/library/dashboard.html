@@ -1,0 +1,270 @@
+{% extends 'library/base.html' %}
+
+{% block title %}
+Library Dashboard
+{% endblock %}
+
+{% block content %}
+
+<!-- ================= HERO ================= -->
+
+<div class="hero-banner text-center mb-5">
+
+    <h1>
+        <i class="bi bi-speedometer2"></i>
+        Library Dashboard
+    </h1>
+
+    <p class="lead mt-3">
+        Monitor your library, manage issued books and track circulation statistics.
+    </p>
+
+</div>
+
+<!-- ================= STATISTICS ================= -->
+
+<div class="row g-4 mb-5">
+
+    <div class="col-lg-3 col-md-6">
+
+        <div class="dashboard-card blue">
+
+            <i class="bi bi-book-half fs-1"></i>
+
+            <h2 class="mt-3">{{ total_books }}</h2>
+
+            <p>Total Books</p>
+
+        </div>
+
+    </div>
+
+    <div class="col-lg-3 col-md-6">
+
+        <div class="dashboard-card green">
+
+            <i class="bi bi-check-circle-fill fs-1"></i>
+
+            <h2 class="mt-3">{{ available_books }}</h2>
+
+            <p>Available Books</p>
+
+        </div>
+
+    </div>
+
+    <div class="col-lg-3 col-md-6">
+
+        <div class="dashboard-card orange">
+
+            <i class="bi bi-arrow-left-right fs-1"></i>
+
+            <h2 class="mt-3">{{ borrowed_books }}</h2>
+
+            <p>Issued Books</p>
+
+        </div>
+
+    </div>
+
+    <div class="col-lg-3 col-md-6">
+
+        <div class="dashboard-card purple">
+
+            <i class="bi bi-people-fill fs-1"></i>
+
+            <h2 class="mt-3">{{ members }}</h2>
+
+            <p>Total Members</p>
+
+        </div>
+
+    </div>
+
+</div>
+
+<!-- ================= QUICK ACTIONS ================= -->
+
+<div class="card border-0 shadow mb-5">
+
+    <div class="card-body">
+
+        <div class="row text-center">
+
+            <div class="col-md-4 mb-3">
+
+                <a href="{% url 'catalog' %}" class="btn btn-primary btn-lg w-100">
+
+                    <i class="bi bi-journal-bookmark-fill"></i>
+
+                    Browse Catalog
+
+                </a>
+
+            </div>
+
+            <div class="col-md-4 mb-3">
+
+                <a href="{% url 'issue' %}" class="btn btn-success btn-lg w-100">
+
+                    <i class="bi bi-book"></i>
+
+                    Issue Book
+
+                </a>
+
+            </div>
+
+            <div class="col-md-4 mb-3">
+
+                <a href="{% url 'return' %}" class="btn btn-warning btn-lg w-100 text-dark">
+
+                    <i class="bi bi-arrow-return-left"></i>
+
+                    Return Book
+
+                </a>
+
+            </div>
+
+        </div>
+
+    </div>
+
+</div>
+
+<!-- ================= BORROWED BOOKS ================= -->
+
+<div class="card shadow border-0">
+
+    <div class="card-header bg-primary text-white">
+
+        <h4 class="mb-0">
+
+            <i class="bi bi-bookmarks-fill"></i>
+
+            Currently Borrowed Books
+
+        </h4>
+
+    </div>
+
+    <div class="card-body">
+
+        <div class="table-responsive">
+
+            <table class="table table-hover align-middle">
+
+                <thead>
+
+                    <tr>
+
+                        <th>Book</th>
+
+                        <th>Member</th>
+
+                        <th>Issue Date</th>
+
+                        <th>Due Date</th>
+
+                        <th>Status</th>
+
+                    </tr>
+
+                </thead>
+
+                <tbody>
+
+                {% for item in borrowed %}
+
+                <tr>
+
+                    <td>
+
+                        <strong>{{ item.book.title }}</strong>
+
+                    </td>
+
+                    <td>
+
+                        {{ item.member.name }}
+
+                    </td>
+
+                    <td>
+
+                        {{ item.issue_date }}
+
+                    </td>
+
+                    <td>
+
+                        {{ item.due_date }}
+
+                    </td>
+
+                    <td>
+
+                        {% if item.due_date < today %}
+
+                        <span class="badge bg-danger">
+
+                            <i class="bi bi-exclamation-triangle-fill"></i>
+
+                            Overdue
+
+                        </span>
+
+                        {% else %}
+
+                        <span class="badge bg-success">
+
+                            <i class="bi bi-check-circle-fill"></i>
+
+                            Borrowed
+
+                        </span>
+
+                        {% endif %}
+
+                    </td>
+
+                </tr>
+
+                {% empty %}
+
+                <tr>
+
+                    <td colspan="5" class="text-center py-5">
+
+                        <i class="bi bi-emoji-smile fs-1 text-success"></i>
+
+                        <h5 class="mt-3">
+
+                            No Borrowed Books
+
+                        </h5>
+
+                        <p class="text-muted">
+
+                            All books are currently available.
+
+                        </p>
+
+                    </td>
+
+                </tr>
+
+                {% endfor %}
+
+                </tbody>
+
+            </table>
+
+        </div>
+
+    </div>
+
+</div>
+
+{% endblock %}

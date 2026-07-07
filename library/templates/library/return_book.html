@@ -1,0 +1,110 @@
+{% extends 'library/base.html' %}
+
+{% block title %}
+Return Book
+{% endblock %}
+
+{% block content %}
+
+<div class="row justify-content-center">
+
+<div class="col-md-6">
+
+<div class="card shadow">
+
+<div class="card-header bg-danger text-white">
+
+<h3>Return Book</h3>
+
+</div>
+
+<div class="card-body">
+
+<form method="POST">
+
+{% csrf_token %}
+
+{{ form.as_p }}
+
+<div class="mb-3">
+
+    <label class="form-label">
+
+        Estimated Fine
+
+    </label>
+
+    <input
+        type="text"
+        id="fineBox"
+        class="form-control"
+        readonly>
+
+</div>
+
+<div class="mb-3">
+
+    <label class="form-label">
+
+        Due Date
+
+    </label>
+
+    <input
+        type="text"
+        id="dueDateBox"
+        class="form-control"
+        readonly>
+
+</div>
+
+<button class="btn btn-danger w-100">
+
+Return Book
+
+</button>
+
+</form>
+
+</div>
+
+</div>
+
+</div>
+
+</div>
+
+{% endblock %}
+<script>
+
+const book = document.getElementById("id_book");
+const member = document.getElementById("id_member");
+
+function loadFine(){
+
+    if(book.value=="" || member.value=="")
+        return;
+
+    fetch(
+        `/calculate-fine/?book=${book.value}&member=${member.value}`
+    )
+
+    .then(response=>response.json())
+
+    .then(data=>{
+
+        document.getElementById("fineBox").value =
+            "$" + data.fine;
+
+        document.getElementById("dueDateBox").value =
+            data.due_date;
+
+    });
+
+}
+
+book.addEventListener("change", loadFine);
+
+member.addEventListener("change", loadFine);
+
+</script>

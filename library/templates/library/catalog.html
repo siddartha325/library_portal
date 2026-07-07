@@ -1,0 +1,302 @@
+{% extends 'library/base.html' %}
+
+{% block title %}
+Digital Library Catalog
+{% endblock %}
+
+{% block content %}
+
+<!-- ================= HERO SECTION ================= -->
+
+<div class="hero-banner text-center">
+
+    <h1 class="display-4 fw-bold">
+        📚 Digital Library & E-Book Portal
+    </h1>
+
+    <p class="lead mt-3">
+        Browse thousands of books, issue and return books,
+        track due dates, and manage library circulation easily.
+    </p>
+
+    <div class="mt-4">
+
+        <a href="{% url 'issue' %}" class="btn btn-light btn-lg me-3">
+            <i class="bi bi-book"></i>
+            Issue Book
+        </a>
+
+        <a href="{% url 'dashboard' %}" class="btn btn-outline-light btn-lg">
+            <i class="bi bi-speedometer2"></i>
+            Dashboard
+        </a>
+
+    </div>
+
+</div>
+
+<!-- ================= QUICK STATS ================= -->
+
+<div class="row text-center mb-5">
+
+    <div class="col-md-4 mb-3">
+
+        <div class="card shadow-sm border-0">
+
+            <div class="card-body">
+
+                <i class="bi bi-book-half text-primary fs-1"></i>
+
+                <h4 class="mt-2">{{ books|length }}</h4>
+
+                <p class="text-muted mb-0">
+                    Books Available
+                </p>
+
+            </div>
+
+        </div>
+
+    </div>
+
+    <div class="col-md-4 mb-3">
+
+        <div class="card shadow-sm border-0">
+
+            <div class="card-body">
+
+                <i class="bi bi-search text-success fs-1"></i>
+
+                <h4 class="mt-2">
+                    Instant Search
+                </h4>
+
+                <p class="text-muted mb-0">
+                    Search by Title & Author
+                </p>
+
+            </div>
+
+        </div>
+
+    </div>
+
+    <div class="col-md-4 mb-3">
+
+        <div class="card shadow-sm border-0">
+
+            <div class="card-body">
+
+                <i class="bi bi-arrow-repeat text-warning fs-1"></i>
+
+                <h4 class="mt-2">
+                    Easy Borrowing
+                </h4>
+
+                <p class="text-muted mb-0">
+                    Issue & Return Books
+                </p>
+
+            </div>
+
+        </div>
+
+    </div>
+
+</div>
+
+<!-- ================= SEARCH BAR ================= -->
+
+<div class="card shadow border-0 mb-5">
+
+    <div class="card-body">
+
+        <div class="row">
+
+            <div class="col-md-8 mb-3">
+
+                <input
+                    type="text"
+                    id="searchInput"
+                    class="form-control form-control-lg"
+                    placeholder="🔍 Search books by title or author">
+
+            </div>
+
+            <div class="col-md-4">
+
+                <select
+                    id="genreFilter"
+                    class="form-select form-select-lg">
+
+                    <option value="">📚 All Genres</option>
+
+                    <option value="TECH">
+                        Computer Science & Technology
+                    </option>
+
+                    <option value="SCI">
+                        Science & Mathematics
+                    </option>
+
+                    <option value="LIT">
+                        Literature & Fiction
+                    </option>
+
+                    <option value="HIST">
+                        History & Social Sciences
+                    </option>
+
+                </select>
+
+            </div>
+
+        </div>
+
+    </div>
+
+</div>
+
+<!-- ================= BOOK COLLECTION ================= -->
+
+<h2 class="mb-4">
+    <i class="bi bi-journal-bookmark-fill text-primary"></i>
+    Library Collection
+</h2>
+
+<div class="row" id="bookContainer">
+
+{% for book in books %}
+
+<div
+class="col-lg-4 col-md-6 mb-4 book-card"
+data-title="{{ book.title|lower }}"
+data-author="{{ book.author.name|lower }}"
+data-genre="{{ book.genre }}">
+
+<div class="card h-100 shadow">
+
+<img
+    src="{{ book.cover_url|default:'https://images-na.ssl-images-amazon.com/images/I/41xShlnTZTL._SX374_BO1,204,203,200_.jpg' }}"
+    alt="{{ book.title }}"
+    class="card-img-top"
+    style="height:320px; object-fit:cover;"
+    onerror="this.src='https://images-na.ssl-images-amazon.com/images/I/41xShlnTZTL._SX374_BO1,204,203,200_.jpg';">
+
+<div class="card-body d-flex flex-column">
+
+<h4 class="card-title">
+{{ book.title }}
+</h4>
+
+<p>
+
+<i class="bi bi-person-fill text-primary"></i>
+
+<strong>Author:</strong>
+
+{{ book.author.name }}
+
+</p>
+
+<p>
+
+<i class="bi bi-upc-scan text-success"></i>
+
+<strong>ISBN:</strong>
+
+{{ book.isbn }}
+
+</p>
+
+<p>
+
+<i class="bi bi-tags-fill text-warning"></i>
+
+<strong>Genre:</strong>
+
+{{ book.get_genre_display }}
+
+</p>
+
+<p>
+
+<i class="bi bi-stack text-info"></i>
+
+<strong>Copies:</strong>
+
+{{ book.available_copies }}
+
+</p>
+
+{% if book.available_copies > 0 %}
+
+<span class="badge bg-success mb-3">
+
+<i class="bi bi-check-circle-fill"></i>
+
+Available
+
+</span>
+
+{% else %}
+
+<span class="badge bg-danger mb-3">
+
+<i class="bi bi-x-circle-fill"></i>
+
+Issued Out
+
+</span>
+
+{% endif %}
+
+<div class="mt-auto">
+
+<a
+href="{% url 'issue' %}"
+class="btn btn-primary w-100">
+
+<i class="bi bi-book-fill"></i>
+
+Issue Book
+
+</a>
+
+</div>
+
+</div>
+
+</div>
+
+</div>
+
+{% empty %}
+
+<div class="col-12">
+
+<div class="alert alert-warning text-center p-5">
+
+<h3>
+
+<i class="bi bi-exclamation-circle-fill"></i>
+
+No Books Available
+
+</h3>
+
+<p class="mb-0">
+
+Please add books from the Django Admin Panel.
+
+</p>
+
+</div>
+
+</div>
+
+{% endfor %}
+
+</div>
+
+{% endblock %}

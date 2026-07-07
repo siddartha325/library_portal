@@ -1,0 +1,94 @@
+{% extends 'library/base.html' %}
+
+{% block title %}
+Borrow History
+{% endblock %}
+
+{% block content %}
+
+<h2 class="mb-4">📖 Borrow History</h2>
+
+<div class="card shadow">
+
+<div class="card-body">
+
+<table class="table table-striped">
+
+<thead class="table-dark">
+
+<tr>
+
+<th>Book</th>
+<th>Member</th>
+<th>Issue Date</th>
+<th>Return Date</th>
+<th>Fine</th>
+<th>Status</th>
+
+</tr>
+
+</thead>
+
+<tbody>
+
+{% for record in records %}
+
+<tr>
+
+<td>{{ record.book.title }}</td>
+
+<td>{{ record.member.name }}</td>
+
+<td>{{ record.issue_date }}</td>
+
+<td>{{ record.return_date|default:"Not Returned" }}</td>
+
+<td>${{ record.fine_amount }}</td>
+
+<td>
+
+{% if record.is_returned %}
+
+<span class="badge bg-success">
+
+Returned
+
+</span>
+
+{% else %}
+
+<span class="badge bg-warning">
+
+Borrowed
+
+</span>
+
+{% endif %}
+
+</td>
+
+</tr>
+
+{% empty %}
+
+<tr>
+
+<td colspan="6" class="text-center">
+
+No circulation records available.
+
+</td>
+
+</tr>
+
+{% endfor %}
+
+</tbody>
+
+</table>
+
+</div>
+
+</div>
+
+{% endblock %}
